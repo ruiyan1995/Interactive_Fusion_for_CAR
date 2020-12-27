@@ -27,10 +27,11 @@ bash tools/dump_frames_char.sh
 
 ### Train a Standard Model from Scratch
 ```
-bash traintest_script.sh
+python main.py --cfg STHELSE_COM
 ```
+
 ## Citation
-If you wish to refer to the results of HiGCIN, please use the following BibTeX entry.
+If you wish to refer to the results of this work, please use the following BibTeX entry.
 ```
 @article{yan2020interactive,
   title={Interactive Fusion of Multi-level Features for Compositional Activity Recognition},
