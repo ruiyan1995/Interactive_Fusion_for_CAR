@@ -25,9 +25,21 @@ bash tools/dump_frames_sth.sh
 bash tools/dump_frames_char.sh
 ```
 
+
+#### Get frame information 
+i.e., height, width, and the number of frames in each video
+```
+bash tools/get_frame_info.sh 'sth_else'
+bash tools/get_frame_info.sh 'charades'
+```
+
+
 ### Train a Standard Model from Scratch
 ```
+# Compositional setting for Something-Else
 python main.py --cfg STHELSE_COM
+# Compositional setting for Charades
+python main.py --cfg CHARADES_COM
 ```
 
 ## Citation
