@@ -13,7 +13,7 @@ pip install torch torchvision
 ### Preprocess datasets
 #### Something-Else
 - Download [Something-Something Dataset](https://github.com/joaanna/something_else) and [Something-Else Annotations](https://github.com/joaanna/something_else).
-- Extract (or softlink) videos under ```dataset/sth-else/videos```, and then dump the frames into ```dataset/sth-else/frames``` by the following commands:
+- Extract (or softlink) videos under ```dataset/sth_else/videos```, and then dump the frames into ```dataset/sth_else/frames``` by the following commands:
 ```
 bash tools/dump_frames_sth.sh
 ```
