@@ -41,7 +41,7 @@ If you wish to refer to the results of this work, please use the following BibTe
 }
 ```
 ## Acknowledgments
-Our code is built on the Pytorch implementation of STIN proposed by joaanna from [Somthing-Else](https://github.com/joaanna/something_else).
+Our code is built on the Pytorch implementation of [STIN](https://github.com/joaanna/something_else) proposed by joaanna.
 
 ## Contact Information
 Feel free to create a pull request or contact me by Email = ["ruiyan", at, "njust", dot, "edu", dot, "cn"], if you find any bugs.
