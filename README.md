@@ -34,7 +34,8 @@ bash tools/get_video_info.sh 'charades'
 ```
 
 ### Check some important files
-We upload some necessary files to [Baidu Cloud](https://pan.baidu.com/s/18AAu3yg04rWEanJ_LVn3yg)(code:gl0v) including the annotations and video_info.json into ```dataset``` and the dataset split setting in ```dataset_splits```.
+We upload some necessary files to [Baidu Cloud](https://pan.baidu.com/s/18AAu3yg04rWEanJ_LVn3yg) (code: **gl0v**
+), such as the annotations and video_info.json into ```dataset``` and the data-split settings in ```dataset_splits```.
 
 ### Train a Standard Model from Scratch
 ```
