@@ -1,9 +1,9 @@
 # Interactive_Fusion_for_CAR
-Pytorch implementation of [Interactive Fusion of Multi-level Features for Compositional Activity Recognition](https://github.com/ruiyan1995/Interactive_Fusion_for_CAR).
+Pytorch implementation of [Interactive Fusion of Multi-level Features for Compositional Activity Recognition](https://arxiv.org/pdf/2012.05689).
 
 ## Get started
 ### Prerequisite
-Our approach is tested on only Ubuntu with GPU and it needs at least 16G GPU memory. The neccseearay packages can be install by following commonds:
+Our approach is tested on only Ubuntu with GPU and it needs at least 16G GPU memory. The neccseearay packages can be installed by the following commonds:
 ```
 conda create -n Interactive_Fusion python=3.6
 conda activate Interactive_Fusion
