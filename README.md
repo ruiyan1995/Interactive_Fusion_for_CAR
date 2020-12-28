@@ -13,24 +13,24 @@ pip install torch torchvision
 ### Preprocess datasets
 #### Something-Else
 - Download [Something-Something Dataset](https://github.com/joaanna/something_else) and [Something-Else Annotations](https://github.com/joaanna/something_else).
-- Extract (or softlink) videos under ```dataset/sth_else/videos```, and then dump the frames into ```dataset/sth_else/frames``` by the following commands:
+- Extract (or softlink) videos under ```dataset/sth_else/videos```, and then dump the frames into ```dataset/sth_else/frames``` by the following command:
 ```
 bash tools/dump_frames_sth.sh
 ```
 
 #### Charades
 - Download [Charades Dataset](https://prior.allenai.org/projects/charades) (scaled to 480p) and [Action Genome Annotations](https://github.com/JingweiJ/ActionGenome).
-- Extract (or softlink) videos under ```dataset/charades/videos```, put the annotations into ```dataset/charades/annotations```, and then dump the frames into ```dataset/charades/frames``` by the following commands:
+- Extract (or softlink) videos under ```dataset/charades/videos```, put the annotations into ```dataset/charades/annotations```, and then dump the frames into ```dataset/charades/frames``` by the following command:
 ```
 bash tools/dump_frames_char.sh
 ```
 
 
-#### Get frame information 
-i.e., height, width, and the number of frames in each video
+#### Get video information
+Get some video information, such as the height and width of the video, and the number of frames in each video
 ```
-bash tools/get_frame_info.sh 'sth_else'
-bash tools/get_frame_info.sh 'charades'
+bash tools/get_video_info.sh 'sth_else'
+bash tools/get_video_info.sh 'charades'
 ```
 
 
