@@ -27,15 +27,15 @@ bash tools/dump_frames_char.sh
 
 
 #### Get video information
-Get some video information, such as the height and width of the video, and the number of frames in each video
+Get some video information, such as the height and width of the video, and the number of frames in each video. Alternatively, you can also download ```video_info.json``` from [here](https://github.com/ruiyan1995/Interactive_Fusion_for_CAR#Pre-generated-files).
 ```
 bash tools/get_video_info.sh 'sth_else'
 bash tools/get_video_info.sh 'charades'
 ```
 
-### Check some important files
-We upload some necessary files to [Baidu Cloud](https://pan.baidu.com/s/18AAu3yg04rWEanJ_LVn3yg) (code: **gl0v**
-), such as the annotations and video_info.json into ```dataset``` and the data-split settings in ```dataset_splits```.
+### Pre-generated files
+You can check some necessary files in [Baidu Cloud](https://pan.baidu.com/s/18AAu3yg04rWEanJ_LVn3yg) (code: **gl0v**
+), such as the annotations and video_info.json into ```dataset``` and the data-split settings in ```dataset_splits```. **Download and put them in the same path.**
 
 ### Train a Standard Model from Scratch
 ```
