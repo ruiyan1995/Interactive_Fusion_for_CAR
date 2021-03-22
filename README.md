@@ -45,9 +45,9 @@ python main.py --cfg STHELSE/COM/GT/OURS
 python main.py --cfg STHELSE/FEWSHOT/GT/OURS/base
 python main.py --cfg STHELSE/FEWSHOT/GT/OURS/5shot
 python main.py --cfg STHELSE/FEWSHOT/GT/OURS/10shot
+```
 <!-- # Compositional setting for Charades
 python main.py --cfg CHARADES_COM -->
-```
 
 ## Citation
 If you wish to refer to the results of this work, please use the following BibTeX entry.
