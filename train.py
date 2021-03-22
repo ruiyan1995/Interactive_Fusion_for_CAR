@@ -83,7 +83,7 @@ def main():
         # create training loader
         print('create training loader')
         train_loader = torch.utils.data.DataLoader(
-            dataset_train, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, drop_last=True, pin_memory=True)
+            dataset_train, batch_size=args.batch_size, shuffle=True, num_workers=args.workers, drop_last=True, pin_memory=False) # pin_memory=True, modified by Mr. Yan
 
     dataset_val = VideoFolder(root=args.root_frames,
                               num_boxes=args.num_boxes,
@@ -100,7 +100,7 @@ def main():
     val_loader = torch.utils.data.DataLoader(
         dataset_val, drop_last=False,  # drop_last=True, modified by Mr. Yan
         batch_size=args.batch_size, shuffle=False,
-        num_workers=args.workers, pin_memory=True
+        num_workers=args.workers, pin_memory=False # pin_memory=True, modified by Mr. Yan
     )
 
     optimizer = torch.optim.SGD(model.parameters(), momentum=args.momentum,
