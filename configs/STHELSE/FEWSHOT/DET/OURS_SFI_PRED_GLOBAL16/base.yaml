@@ -1,0 +1,33 @@
+# DATA_MODEL_SOLVER CONFIGS:
+DATA_INFO:
+  dataset_name: 'sth_else'
+  num_classes: 88
+  json_data_train: 'dataset_splits/sth_else/fewshot/base_training_set.json'
+  json_data_val: 'dataset_splits/sth_else/fewshot/base_validation_set.json'
+  json_file_labels: 'dataset_splits/sth_else/fewshot/base_labels.json'
+  tracked_boxes: 'dataset/sth_else/BBOX/DET/FEWSHOT/anno.pkl'
+  vis_info: True
+  coord_info: True
+  category_info: True
+  num_frames: 32 # will be divided by two in frame load
+  if_augment: False
+MODEL_INFO:
+  model: 'region'
+  box_mode: 'DET'
+  GLOBAL: T # add frame-level features for our region-based framework, when detected boxes are inaccurate.
+  global_mode: default
+  joint: T
+  reasoning_module: 'STCR' # Spatio-Temporal Compositional Reasoning
+  reasoning_mode: 'ST' # S, T, ST
+  LSTM_flow: True
+  multiple_interaction: True
+  pred: True
+  pred_w: 5
+SOLVER_INFO:
+  lr: default
+  lr_steps: 5 10 15 # 24 35 45
+  epochs: 50
+  batch_size: 72
+  workers: 16
+  ckpt: default
+                

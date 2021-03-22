@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from model.resnet3d_xl import Net
 from model.nonlocal_helper import Nonlocal
-from model.TRNmodule import RelationModuleMultiScale
-import argparse
+# from model.TRNmodule import RelationModuleMultiScale
+
 
 class VideoModelCoord(nn.Module):
     def __init__(self, opt):
@@ -827,20 +827,13 @@ class VideoModelGlobalCoordLatentNL(nn.Module):
         coord_ft = torch.mean(bf_nonlocal, dim=2)  # (b, coord_feature_dim)
 
         # video_features = torch.cat([global_features, local_features, box_features], dim=1)
+        # [V x 512 x T / 2 x 14 x 14] ---> [V x T / 2 x 512]
         _gf = videos_features.mean(-1).mean(-1).view(b, (self.nr_frames//2), 2*self.img_feature_dim)
-        _gf = _gf.mean(1)
+        _gf = _gf.mean(1) # [V x T / 2 x 512] ---> [V x 512]
         video_features = torch.cat([_gf.view(b, -1), coord_ft], dim=-1)
 
         cls_output = self.classifier(video_features)  # (b, num_classes)
         return cls_output
-
-
-
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--global_mode', type=str, choices=['pool', 'score_pool', 'TRN','TSM'], default='pool')
-args, _ = parser.parse_known_args()
 
 class VideoGlobalModel(nn.Module):
     """
@@ -851,7 +844,7 @@ class VideoGlobalModel(nn.Module):
                  ):
         super(VideoGlobalModel, self).__init__()
 
-        self.global_mode = args.global_mode
+        self.global_mode = opt.global_mode
         self.dataset_name = opt.dataset_name
 
         self.nr_boxes = opt.num_boxes
@@ -861,11 +854,13 @@ class VideoGlobalModel(nn.Module):
         self.coord_feature_dim = opt.coord_feature_dim
         self.i3D = Net(self.nr_actions, extract_features=True, loss_type='softmax')
         self.dropout = nn.Dropout(0.3)
-        if self.global_mode=='TRN':
-            self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-            self.TRN = RelationModuleMultiScale(512, opt.num_frames//2, opt.num_classes)
-        else:
-            self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
+        # if self.global_mode=='TRN':
+        #     self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        #     self.TRN = RelationModuleMultiScale(512, opt.num_frames//2, opt.num_classes)
+        # else:
+        #     self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
+        self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
+        
         self.conv = nn.Conv3d(2048, 512, kernel_size=(1, 1, 1), stride=1)
         self.fc = nn.Linear(512, self.nr_actions)
         self.crit = nn.CrossEntropyLoss()
@@ -895,7 +890,17 @@ class VideoGlobalModel(nn.Module):
         print('Number of frozen weights {}'.format(frozen_weights))
         assert frozen_weights != 0, 'You are trying to fine tune, but no weights are frozen!!! ' \
                                     'Check the naming convention of the parameters'
-
+    
+    ### only for Charades
+    # def train(self, mode=True):  # overriding default train function
+    #     super(VideoGlobalModel, self).train(mode)
+    #     if self.dataset_name == 'charades':
+    #         for m in self.i3D.modules():  # or self.modules(), if freezing all bn layers
+    #             if isinstance(m, nn.BatchNorm1d) or isinstance(m, nn.BatchNorm2d) or isinstance(m, nn.BatchNorm3d):
+    #                 m.eval()
+    #                 # shutdown update in frozen mode
+    #                 m.weight.requires_grad = False
+    #                 m.bias.requires_grad = False
     
 
     def forward(self, global_img_input, local_img_input, box_input, video_label, is_inference=False):

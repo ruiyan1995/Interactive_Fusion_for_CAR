@@ -123,7 +123,7 @@ class VideoFolder(torch.utils.data.Dataset):
         labels = []
         since = time.time()
 
-        video_info_json_pth = 'dataset/%s/video_info.json' % (
+        video_info_json_pth = 'dataset/%s/BBOX/video_info.json' % (
             self.dataset_name)
         if os.path.exists(video_info_json_pth):
             with open(video_info_json_pth, 'r') as fp:
@@ -174,7 +174,6 @@ class VideoFolder(torch.utils.data.Dataset):
         elif self.dataset_name == 'charades':
             file_path = join(os.path.dirname(self.data_root),
                              'frames', vid_name, '%06d.png' % (frame_idx))
-            # print(file_path)
 
         return Image.fromarray(cv2.imread(file_path)).convert('RGB')
 

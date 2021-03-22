@@ -1,0 +1,31 @@
+# DATA_MODEL_SOLVER CONFIGS:
+DATA_INFO:
+  dataset_name: 'sth_else'
+  num_classes: 88
+  json_data_train: 'dataset_splits/sth_else/fewshot/base_training_set.json'
+  json_data_val: 'dataset_splits/sth_else/fewshot/base_validation_set.json'
+  json_file_labels: 'dataset_splits/sth_else/fewshot/base_labels.json'
+  tracked_boxes: 'dataset/sth_else/BBOX/DET/FEWSHOT/anno.pkl'
+  vis_info: default
+  coord_info: default
+  category_info: default
+  num_frames: 8
+  if_augment: False
+MODEL_INFO:
+  model: 'global_coord_latent_nl'
+  global_mode: default
+  joint: default
+  reasoning_module: default
+  reasoning_mode: default
+  LSTM_flow: default
+  multiple_interaction: default
+  pred: default
+  pred_w: default
+SOLVER_INFO:
+  lr: default
+  lr_steps: default
+  epochs: default
+  batch_size: 72
+  workers: 16
+  ckpt: default
+                

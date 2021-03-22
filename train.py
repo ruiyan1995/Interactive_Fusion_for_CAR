@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import time
 import numpy as np
@@ -58,6 +59,7 @@ def main():
         model = torch.nn.DataParallel(model)
     print(model)
     cudnn.benchmark = True
+
 
     # loading box annos
     print('... Loading box annotations might take a minute ...')
@@ -289,6 +291,8 @@ def validate(val_loader, model, criterion, epoch=None, tb_logger=None, class_to_
             if args.evaluate:
                 logits_matrix.append(output.cpu().data.numpy())
                 targets_list.append(video_label.cpu().numpy())
+                # print('logits_matrix mem_size: ', sys.getsizeof(logits_matrix))
+                # print('targets_list mem_size: ', sys.getsizeof(targets_list))
 
         # measure accuracy and record loss
         batch_size = box_tensors.size(0)

@@ -21,6 +21,8 @@ class VideoRegionModel(nn.Module):
 
     def __init__(self, opt):
         super(VideoRegionModel, self).__init__()
+        self.box_mode = args.box_mode
+        self.GLOBAL = args.GLOBAL
 
         self.nr_boxes = opt.num_boxes
         self.nr_actions = opt.num_classes
@@ -197,12 +199,17 @@ class VideoRegionModel(nn.Module):
         )
 
         if self.fc_dim:
+            if self.box_mode == 'DET' and self.vis_info and self.GLOBAL:
+                self.fc_dim += self.img_feature_dim # add global frame-level features
             self.fc = nn.Linear(self.fc_dim, self.nr_actions)
         else:
-            self.fc = nn.Linear(self.hidden_feature_dim*num_feas, self.nr_actions)
+            fc_dim = self.hidden_feature_dim*num_feas
+            if self.box_mode == 'DET' and self.vis_info and self.GLOBAL:
+                fc_dim += self.img_feature_dim
+                num_feas += 1 # add global frame-level features
+            self.fc = nn.Linear(fc_dim, self.nr_actions)
 
-        if opt.fine_tune:
-            self.fine_tune(opt.fine_tune)
+
 
         if self.pred:
             if args.reasoning_module == 'STNL' or 'STCR':
@@ -224,7 +231,31 @@ class VideoRegionModel(nn.Module):
         
         if opt.fine_tune:
             self.fine_tune(opt.fine_tune)
+        if opt.restore_i3d:
+            self.restore_i3d(opt.restore_i3d)
 
+    def restore_i3d(self, restore_path, parameters_to_train=['classifier']):
+        weights = torch.load(restore_path)['state_dict']
+        new_weights = {}
+        # import pdb
+        for k, v in weights.items():
+            if 'i3D' in k:
+                new_weights[k.replace('module.', '')] = v
+        # pdb.set_trace()
+        self.load_state_dict(new_weights, strict=False)
+        print('Num of weights in restore dict {}'.format(len(new_weights.keys())))
+
+        # frozen_weights = 0
+        # for name, param in self.named_parameters():
+        #     # if 'i3D' in name:
+        #     if 'backbone' in name:
+        #         param.requires_grad = False
+        #         frozen_weights += 1
+        #     else:
+        #         print('Training : {}'.format(name))
+        # print('Number of frozen weights {}'.format(frozen_weights))
+        # assert frozen_weights != 0, 'You are trying to fine tune, but no weights are frozen!!! ' \
+        #                             'Check the naming convention of the parameters'
 
     def fine_tune(self, restore_path, parameters_to_train=['classifier']):
         if not torch.cuda.is_available():
@@ -279,7 +310,7 @@ class VideoRegionModel(nn.Module):
             ### Reduce dimension video_features - [V x 512 x T x 14 x 14], d = 512
             conv_fea_maps = self.conv(org_feas)
             ### get global feas
-            global_vis_feas = self.avgpool3d(conv_fea_maps).squeeze() # [V x 512], d = 512
+            global_vis_feas = self.avgpool3d(conv_fea_maps).view(V, -1) # [V x 512], d = 512
             ### reshape fea_maps
             conv_fea_maps = conv_fea_maps.permute(0,2,1,3,4).contiguous() # [V x T x d x 14 x 14]
             conv_fea_maps = conv_fea_maps.view(-1, *conv_fea_maps.size()[2:]) # [V * T x d x 14 x 14]
@@ -333,10 +364,18 @@ class VideoRegionModel(nn.Module):
             fea_dict['category'] = region_category_feas
 
         global_feas = self.late_fusion(fea_dict)
+
+        # detected boxes will be inaccurate, frame-level representation is needed!
+        if self.box_mode == 'DET' and self.vis_info and self.GLOBAL:
+            # global_feas: [V, D_vis+D_coord]; global_vis_feas: [V x 512]
+            # if len(global_feas.size())!=len(global_vis_feas.size()):
+            #     print('size:', global_feas.size(), global_vis_feas.size())
+            global_feas = torch.cat([global_feas, global_vis_feas], dim=-1) # 
+
         # prediction - [V x NUM_CALSS]
         #print('global_feas:', global_feas.size())
         cls_output = self.fc(global_feas)
-
+        
         if self.pred:
             return cls_output, self.pred_loss
         return cls_output
@@ -371,56 +410,6 @@ class VideoRegionModel(nn.Module):
                     _, global_feas = eval('self.'+args.reasoning_module)(global_feas, args.reasoning_mode)
         else:
             pass
-            # if self.vis_info:
-            #     # fea_list.append(fea_dict['global_vis']) # [V x D_vis]
-            #     # 'pool' region features [V x T x P x D_vis] ---> [V x D_vis]
-            #     ##################################################################################
-            #     vis_feas = fea_dict['vis'].permute(0, 3, 1, 2)  # [V x D_vis x T x P]
-            #     if args.reasoning_module=='STRG' and not self.coord_info and not self.category_info:
-            #         vis_feas = vis_feas.permute(0,2,3,1) # [V x T x P x D_vis]
-            #         ### test for STRG, use visual information as the instance-centric feature only
-            #         _, vis_feas = eval('self.'+args.reasoning_module)(vis_feas, args.reasoning_mode) #[V x D_vis]
-            #     elif args.reasoning_module=='pool':
-            #         vis_feas = self.avgpool2d(vis_feas).view(vis_feas.size(0),-1) # [V x D_vis]
-            #     elif args.reasoning_module=='pool_T':
-            #         vis_feas = vis_feas.permute(0,2,3,1) # [V x T x P x D_vis]
-            #         vis_feas = self.pool_T(vis_feas)
-            #     ###################################################################################
-            #     fea_list.append(vis_feas)
-            # if self.coord_info and not self.category_info:
-            #     # 'STIN' 
-            #     coord_feas = fea_dict['coord'] #[V x T x P x D_coord]
-            #     if self.pred:
-            #         pass
-            #     else:
-            #         if args.reasoning_module=='pool':
-            #             coord_feas = coord_feas.permute(0, 3, 1, 2) # [V, T, P, D_] ---> [V, D_, T, P]
-            #             coord_feas = self.avgpool2d(coord_feas).view(coord_feas.size(0),-1) # [V x D_]
-            #         elif args.reasoning_module=='pool_T':
-            #             coord_feas = self.pool_T(coord_feas) # [V x D_]
-            #         else:
-            #             _, coord_feas = eval('self.'+args.reasoning_module)(coord_feas, args.reasoning_mode)
-            #     fea_list.append(self.non_appearance_encoder(coord_feas))
-            # if self.coord_info and self.category_info:
-            #     # fuse and do 'STIN'
-            #     V, T, P, _ = fea_dict['coord'].size()
-            #     concated_feas = torch.cat([fea_dict['coord'], fea_dict['category']], dim=-1) #[V x (D_coord+D_category)]
-            #     concated_feas = concated_feas.view(-1, concated_feas.size(-1))
-            #     concated_feas = self.coord_category_fusion(concated_feas)  # (V*T*P, coord_feature_dim)
-            #     concated_feas = concated_feas.view(V, T, P, -1) # (V, T, P, coord_feature_dim)
-            #     if self.pred:
-            #         pass
-            #     else:
-            #         if args.reasoning_module=='pool':
-            #             concated_feas = concated_feas.permute(0, 3, 1, 2) # [V, T, P, D_] ---> [V, D_, T, P]
-            #             concated_feas = self.avgpool2d(concated_feas).view(concated_feas.size(0),-1) # [V x D_]
-            #         elif args.reasoning_module=='pool_T':
-            #             concated_feas = self.pool_T(concated_feas) # [V x D_]
-            #         else:
-            #             _, concated_feas = eval('self.'+args.reasoning_module)(concated_feas, args.reasoning_mode)
-            #     fea_list.append(self.non_appearance_encoder(concated_feas))
-            # global_feas = torch.cat(fea_list, dim=-1) #[V x (D_vis*2+D_coord)]
-            # # global_feas = self.dropout(global_feas)
         return global_feas
     
     def pool_T(self, inputs):

@@ -40,9 +40,13 @@ You can check some necessary files in [Baidu Cloud](https://pan.baidu.com/s/18AA
 ### Train a Standard Model from Scratch
 ```
 # Compositional setting for Something-Else
-python main.py --cfg STHELSE_COM
-# Compositional setting for Charades
-python main.py --cfg CHARADES_COM
+python main.py --cfg STHELSE/COM/GT/OURS
+# Fewshot setting for Something-Else
+python main.py --cfg STHELSE/FEWSHOT/GT/OURS/base
+python main.py --cfg STHELSE/FEWSHOT/GT/OURS/5shot
+python main.py --cfg STHELSE/FEWSHOT/GT/OURS/10shot
+<!-- # Compositional setting for Charades
+python main.py --cfg CHARADES_COM -->
 ```
 
 ## Citation

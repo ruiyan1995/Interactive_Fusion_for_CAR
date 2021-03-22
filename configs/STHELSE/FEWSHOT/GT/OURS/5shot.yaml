@@ -1,0 +1,31 @@
+# DATA_MODEL_SOLVER CONFIGS:
+DATA_INFO:
+  dataset_name: 'sth_else'
+  num_classes: 86
+  json_data_train: 'dataset_splits/sth_else/fewshot/finetune_5shot_train.json'
+  json_data_val: 'dataset_splits/sth_else/fewshot/finetune_5shot_validation.json'
+  json_file_labels: 'dataset_splits/sth_else/fewshot/finetune_labels.json'
+  tracked_boxes: 'dataset/sth_else/BBOX/GT/anno.pkl'
+  vis_info: True
+  coord_info: True
+  category_info: True
+  num_frames: 16
+  if_augment: False
+MODEL_INFO:
+  model: 'region'
+  global_mode: default
+  joint: T
+  reasoning_module: 'STCR' # Spatio-Temporal Compositional Reasoning
+  reasoning_mode: 'ST' # S, T, ST
+  LSTM_flow: True
+  multiple_interaction: True
+  pred: True
+  pred_w: 5
+SOLVER_INFO:
+  lr: default
+  lr_steps: 5 10 15 # 24 35 45
+  epochs: 20 # 50
+  batch_size: 72
+  workers: 16
+  ckpt: default
+                

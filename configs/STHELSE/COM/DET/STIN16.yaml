@@ -1,0 +1,31 @@
+# DATA_MODEL_SOLVER CONFIGS:
+DATA_INFO:
+  dataset_name: 'sth_else'
+  num_classes: 174
+  json_data_train: 'dataset_splits/sth_else/compositional/train.json'
+  json_data_val: 'dataset_splits/sth_else/compositional/validation.json'
+  json_file_labels: 'dataset_splits/sth_else/compositional/labels.json'
+  tracked_boxes: 'dataset/sth_else/BBOX/DET/COM/anno.pkl'
+  vis_info: default
+  coord_info: default
+  category_info: default
+  num_frames: 16
+  if_augment: True
+MODEL_INFO:
+  model: 'global_coord_latent_nl'
+  global_mode: default
+  joint: default
+  reasoning_module: default
+  reasoning_mode: default
+  LSTM_flow: default
+  multiple_interaction: default
+  pred: default
+  pred_w: default
+SOLVER_INFO:
+  lr: default
+  lr_steps: default
+  epochs: default
+  batch_size: 72
+  workers: 16
+  ckpt: default
+                

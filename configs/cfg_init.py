@@ -85,6 +85,9 @@ def main_args():
 
 def model_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--box_mode', type=str, choices=['GT', 'DET'], default='GT')
+    parser.add_argument('--GLOBAL', type=str2bool,
+                        nargs='?', const=True, default=False)
     parser.add_argument('--vis_info', type=str2bool,
                         nargs='?', const=True, default=True)
     parser.add_argument('--coord_info', type=str2bool,
