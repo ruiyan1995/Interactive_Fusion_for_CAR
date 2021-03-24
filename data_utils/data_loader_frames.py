@@ -123,7 +123,7 @@ class VideoFolder(torch.utils.data.Dataset):
         labels = []
         since = time.time()
 
-        video_info_json_pth = 'dataset/%s/BBOX/video_info.json' % (
+        video_info_json_pth = 'dataset/%s/video_info.json' % (
             self.dataset_name)
         if os.path.exists(video_info_json_pth):
             with open(video_info_json_pth, 'r') as fp:
