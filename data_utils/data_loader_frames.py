@@ -143,8 +143,10 @@ class VideoFolder(torch.utils.data.Dataset):
                 else:
                     frames_path = join(os.path.dirname(
                         self.data_root), "frames/{list_id}".format(list_id=listdata.id))
-                    frame_cnts.append(len(frames_path))
                     frames = os.listdir(frames_path)
+                    frame_cnts.append(int(len(frames)))
+                    
+                    # get frame_ids for CHARADES
                     if self.dataset_name == 'charades':
                         frames.sort(key=lambda x: int(x[:-4]))
                         ids = []
@@ -266,8 +268,10 @@ class VideoFolder(torch.utils.data.Dataset):
         ################ for loading, resizing, and cropping frames ####################
         frames = []
         if self.model.startswith('coord') or (self.model.startswith('region') and not args.vis_info):
-            pass
-            # frames.append(self.load_frame(self.vid_names[index], 0)) # load a frame randomly
+            if self.video_info_json:
+                pass
+            else:# no video info
+                frames.append(self.load_frame(self.vid_names[index], 0)) # load a frame randomly
         else:
             for fidx in frame_list:
                 if self.dataset_name == 'charades':
@@ -276,8 +280,12 @@ class VideoFolder(torch.utils.data.Dataset):
             # for test
             # frames.append(self.load_frame(self.vid_names[index], 0)) # load a frame randomly
 
-        #height, width = frames[0].height, frames[0].width
-        height, width = self.video_info_json[self.vid_names[index]]['res']
+        
+        if self.video_info_json:
+            height, width = self.video_info_json[self.vid_names[index]]['res']
+        else:
+            height, width = frames[0].height, frames[0].width
+
         if frames:
             frames = [img.resize(
                 (self.pre_resize_shape[1], self.pre_resize_shape[0]), Image.BILINEAR) for img in frames]
