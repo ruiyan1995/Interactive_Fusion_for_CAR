@@ -34,8 +34,7 @@ bash tools/get_video_info.sh 'charades'
 ```
 
 ### Pre-generated files
-You can check some necessary files in [Baidu Cloud](https://pan.baidu.com/s/18AAu3yg04rWEanJ_LVn3yg) (code: **gl0v**
-), such as the annotations and video_info.json into ```dataset``` and the data-split settings in ```dataset_splits```. **Download and put them in the same path.**
+You can check some necessary files in [Baidu Cloud]( https://pan.baidu.com/s/1fsznlTB8jo0jPg7Qc5JShw?pwd=36ne) , such as the annotations and video_info.json into ```dataset``` and the data-split settings in ```dataset_splits```. **Download and put them in the same path.**
 
 ### Train a Standard Model from Scratch
 ```
@@ -52,11 +51,21 @@ python main.py --cfg CHARADES_COM -->
 ## Citation
 If you wish to refer to the results of this work, please use the following BibTeX entry.
 ```
-@article{yan2020interactive,
+<!-- @article{yan2020interactive,
   title={Interactive Fusion of Multi-level Features for Compositional Activity Recognition},
   author={Yan, Rui and Xie, Lingxi and Shu, Xiangbo and Tang, Jinhui},
   journal={arXiv preprint arXiv:2012.05689},
   year={2020}
+} -->
+@article{yan2023progressive,
+  title={Progressive instance-aware feature learning for compositional action recognition},
+  author={Yan, Rui and Xie, Lingxi and Shu, Xiangbo and Zhang, Liyan and Tang, Jinhui},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  volume={45},
+  number={8},
+  pages={10317--10330},
+  year={2023},
+  publisher={IEEE}
 }
 ```
 ## Acknowledgments
